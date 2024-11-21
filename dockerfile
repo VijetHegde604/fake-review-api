@@ -7,9 +7,15 @@ WORKDIR /app
 # Copy the requirements.txt file to the container
 COPY requirements.txt /app/
 
-# Install the Python dependencies
-RUN apt-get update && apt-get install -y libgomp1
+# Install essential build tools
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    python3-dev \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
 
+# Install the Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
 RUN python -m spacy download en_core_web_sm
@@ -21,4 +27,4 @@ COPY . /app/
 EXPOSE 5000
 
 # Set the command to run the Flask app
-CMD ["python", "app.py"]
+CMD ["python3", "app.py"]
